@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 //Routes
-require("./routes/api")(app);
+require("./routes/api")(app, axios, cheerio);
 require("./routes/html")(app);
 
 // Use morgan logger for logging requests
