@@ -8,15 +8,16 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require ("cheerio");
 
-//Require the routes
-const routes = require("./controllers/awpcontroller");
-
-app.use(routes);
-
-const PORT = 3000;
+//Require the models
+const db = require("./models")
 
 //Init Express
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+//Routes
+require("./routes/api")(app);
+require("./routes/html")(app);
 
 // Use morgan logger for logging requests
 app.use(logger("dev"));
@@ -25,12 +26,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
-// Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/awpdb", { useNewUrlParser: true });
-
 //Set Handlebars
 app.engine("handlebars", exphbs({defaultLayout: "main"}));
 app.set("view engine", "handlebars");
+
+// Connect to the Mongo DB
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/awpdb";
+
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 //Start the server
 app.listen(PORT, () => console.log(`Server listening on: http://localhost:${PORT}`));
