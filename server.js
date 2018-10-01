@@ -16,7 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 //Routes
-require("./routes/api")(app, axios, cheerio);
+require("./routes/api")(app, axios, cheerio, db);
 require("./routes/html")(app);
 
 // Use morgan logger for logging requests
@@ -24,17 +24,18 @@ app.use(logger("dev"));
 // Use body-parser for handling form submissions
 app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
-app.use(express.static("public"));
+app.use(express.static(__dirname + '/public/'));
 
 //Set Handlebars
 app.engine("handlebars", exphbs({defaultLayout: "main"}));
 app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/awpdb";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/writingcontests";
 
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
+
 
 //Start the server
 app.listen(PORT, () => console.log(`Server listening on: http://localhost:${PORT}`));
